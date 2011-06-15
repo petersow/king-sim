@@ -1,0 +1,5 @@
+Runs the "game"
+
+Requires
+ a) NCurses
+ b) Town Sim gem to be installed
