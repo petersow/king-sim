@@ -1,0 +1,125 @@
+place_one:
+  name: Farm
+  location:
+    x: 4
+    y: 0
+    z: 11
+
+place_two:
+  name: Foresters Hut
+  location:
+    x: 17
+    y: 0
+    z: 3
+
+place_three:
+  name: Fishers Hut
+  location:
+    x: 15
+    y: 0
+    z: 11
+
+place_four:
+  name: Blacksmiths Workshop
+  location:
+    x: 11
+    y: 0
+    z: 7
+
+place_five:
+  name: Market Stall
+  location:
+    x: 11
+    y: 0
+    z: 3
+
+place_six:
+  name: Lumber Mill
+  location:
+    x: 14
+    y: 0
+    z: 2
+
+place_seven:
+  name: Carpenters
+  location:
+    x: 8
+    y: 0
+    z: 7
+
+house_one:
+  name: House one
+  location:
+    x: 3
+    y: 0
+    z: 2
+
+house_two:
+  name: House two
+  location:
+    x: 5
+    y: 0
+    z: 2
+
+house_three:
+  name: House three
+  location:
+    x: 3
+    y: 0
+    z: 4
+
+house_four:
+  name: House four
+  location:
+    x: 5
+    y: 0
+    z: 4
+
+house_five:
+  name: House five
+  location:
+    x: 3
+    y: 0
+    z: 6
+
+house_six:
+  name: House six
+  location:
+    x: 5
+    y: 0
+    z: 6
+
+house_seven:
+  name: House seven
+  location:
+    x: 15
+    y: 0
+    z: 6
+
+house_eight:
+  name: House eight
+  location:
+    x: 17
+    y: 0
+    z: 6
+
+house_nine:
+  name: House nine
+  location:
+    x: 15
+    y: 0
+    z: 8
+
+house_ten:
+  name: House ten
+  location:
+    x: 17
+    y: 0
+    z: 8
+
+house_eleven:
+  name: House eleven
+  location:
+    x: 19
+    y: 0
+    z: 8

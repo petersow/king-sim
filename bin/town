@@ -1,0 +1,137 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.push File.join(File.dirname(__FILE__), "../lib")
+
+require 'ncurses'
+require 'yaml'
+
+require 'town'
+
+tree_color = 1
+person_color = 2
+river_color = 3
+
+Ncurses.initscr
+
+Ncurses.start_color
+bg = Ncurses::COLOR_BLACK
+Ncurses.init_pair(person_color, Ncurses::COLOR_WHITE, bg);
+Ncurses.init_pair(tree_color, Ncurses::COLOR_GREEN, bg);
+Ncurses.init_pair(river_color, Ncurses::COLOR_BLUE, bg);
+Ncurses.cbreak # provide unbuffered input
+Ncurses.noecho # turn off input echoing
+Ncurses.nonl # turn off newline translation
+
+screen = Ncurses.stdscr
+
+screen.intrflush(false) # turn off flush-on-interrupt
+screen.keypad(true) # turn on keypad mode
+
+screen.addstr("Welcome to the Town!")
+screen.addstr("\n\npress any key to start.")
+screen.getch
+
+@people_config = YAML::load(File.open('example/people.yaml'))
+@places_config = YAML::load(File.open('example/places.yaml'))
+@job_roles_config = YAML::load(File.open('example/job_roles.yaml'))
+@trees_config = YAML::load(File.open('example/trees.yaml'))
+@rivers_config = YAML::load(File.open('example/rivers.yaml'))
+
+engine = Town::Engine.new(:people_config => @people_config,
+                          :places_config => @places_config,
+                          :job_roles_config => @job_roles_config,
+                          :trees_config => @trees_config,
+                          :rivers_config => @rivers_config)
+
+screen.clear
+screen.addstr "Loaded #{engine.places.size} #{engine.places.size > 1 ? "places" : "place"}.\n"
+engine.places.each do |place|
+  screen.addstr "#{place.name} is at (#{place.location.x}," +
+                "#{place.location.y},#{place.location.z})\n"
+end
+screen.addstr("\n\npress any key to continue.")
+screen.refresh
+screen.getch
+
+screen.clear
+screen.addstr "Loaded #{engine.job_roles.size} #{engine.job_roles.size > 1 ? "Job roles" : "Job role"}.\n"
+engine.job_roles.each do |job_role|
+  screen.addstr "#{job_role.name} is at #{job_role.place.name}"
+end
+screen.addstr("\n\npress any key to continue.")
+screen.refresh
+screen.getch
+
+screen.clear
+screen.addstr "Loaded #{engine.people.size} #{engine.people.size > 1 ? "people" : "person"}.\n"
+engine.people.each do |person|
+  screen.addstr "#{person.first_name} #{person.family_name} is at " +
+                "(#{person.location.x},#{person.location.y}," +
+                "#{person.location.z})\n"
+end
+
+screen.addstr("\n\npress any key to continue.")
+screen.getch
+screen.refresh
+
+loop do
+  engine.tick
+  screen.clear
+
+  output = "#{engine.clock}\n"
+  screen.addstr "#{engine.clock}\n"
+
+  screen.color_set(tree_color, nil)
+  engine.trees.each do |tree|
+    screen.mvaddstr(tree.location.z, tree.location.x, "#")
+  end
+
+  screen.color_set(river_color, nil)
+  engine.rivers.each do |river|
+    river.area.each do |block|
+      screen.mvaddstr(block.location.z, block.location.x, "~")
+    end
+  end
+
+  screen.color_set(person_color, nil)
+
+  engine.places.each do |place| 
+    screen.mvaddstr(place.location.z, place.location.x, "O")
+  end
+
+  engine.people.each do |person|
+    output += "#{person.first_name} #{person.family_name} is at " +
+         "(#{person.location.x},#{person.location.y}," +
+         "#{person.location.z})\n"
+    output += "#{person.first_name} #{person.family_name} is #{person.current_action}.\n"
+
+    screen.mvaddstr(person.location.z, person.location.x, "@")
+  end
+  screen.mvaddstr 16, 0, "Foresters Hut Inventory"
+  engine.places.each do |place| 
+    if place.name.eql? "Foresters Hut"
+      count = 0
+      screen.mvaddstr 20, 0, place.inventory.list
+    end
+  end
+
+  screen.mvaddstr 16, 25, "Lumber Mill Inventory"
+  engine.places.each do |place| 
+    if place.name.eql? "Lumber Mill"
+      count = 0
+      screen.mvaddstr 20, 25, place.inventory.list
+    end
+  end
+
+  screen.mvaddstr 16, 50, "Carpentery Inventory"
+  engine.places.each do |place| 
+    if place.name.eql? "Carpenters"
+      count = 0
+      screen.mvaddstr 20, 50, place.inventory.list
+    end
+  end
+  screen.refresh
+
+  sleep 0.05
+end
+
+
